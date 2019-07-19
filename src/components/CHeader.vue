@@ -52,7 +52,6 @@ export default {
 			this.setStatusDialog(true)
 			this.setComponent('cart')
 			this.setSideBar(false)
-			console.log(this.sideBar)
 		}
 
 	},
