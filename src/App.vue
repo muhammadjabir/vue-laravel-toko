@@ -1,37 +1,64 @@
 <template>
   <v-app>
-    <v-toolbar app>
-      <v-toolbar-title class="headline text-uppercase">
-        <span>Vuetify</span>
-        <span class="font-weight-light">MATERIAL DESIGN</span>
-      </v-toolbar-title>
-      <v-spacer></v-spacer>
-      <v-btn
-        flat
-        href="https://github.com/vuetifyjs/vuetify/releases/latest"
-        target="_blank"
-      >
-        <span class="mr-2">Latest Release</span>
-      </v-btn>
-    </v-toolbar>
-
-    <v-content>
-      <HelloWorld/>
-    </v-content>
+  <!-- component header -->
+  <c-header />
+  <!-- component sidebar -->
+  <c-side-bar />
+  <!-- konten utama -->
+  <v-content>
+  <v-slide-y-transition mode="out-in">
+  <router-view></router-view>
+  </v-slide-y-transition>
+  </v-content>
+<!-- component footer -->
+  <c-footer />
+  <c-alert />
+  <keep-alive>
+  <v-dialog v-model="dialog" fullscreen hide-overlay transition="dialog-bottom-transition">
+    <component :is="currentComponent"></component>
+  </v-dialog>
+  </keep-alive>
+  
   </v-app>
 </template>
-
 <script>
-import HelloWorld from './components/HelloWorld'
-
+import CHeader from '@/components/CHeader.vue'
+import CFooter from '@/components/CFooter.vue'
+import CSideBar from '@/components/CSideBar.vue'
+import {mapActions , mapGetters} from 'vuex'
 export default {
   name: 'App',
+
   components: {
-    HelloWorld
+  'c-header': CHeader,
+  'c-footer': CFooter,
+  CSideBar,
+  CAlert: () => import('@/components/CAlert.vue'),
+  Search: ()=> import('@/components/Search.vue'),
+  Login: () => import('@/components/Login.vue'),
+  Register: ()=> import('@/views/Register.vue'),
+  Cart: ()=> import('@/views/Cart.vue'),
   },
-  data () {
-    return {
-      //
+
+  methods: {
+    ...mapActions({
+      setStatusDialog: 'dialog/setStatus',
+    })
+  },
+
+  computed:{
+    ...mapGetters({
+      statusDialog: 'dialog/status',
+      currentComponent: 'dialog/currentComponent'
+    }),
+
+    dialog: {
+      get(){
+        return this.statusDialog
+      },
+      set(value){
+        this.setStatusDialog(value)
+      }
     }
   }
 }
